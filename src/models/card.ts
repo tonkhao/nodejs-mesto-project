@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import userSchema from '../models/user'
+// import userSchema from '../models/user'
 import IUser from '../models/user'
 
 interface ICard {
@@ -21,11 +21,12 @@ const cardSchema = new mongoose.Schema({
     required: true,
   },
   owner: {
-    userSchema,
+    // userSchema,
+    type: String,
     required: true,
   },
-  likes: [userSchema.ObjectId],
-  createdAt:
+  likes: [String],
+  createdAt: Date
 });
 
 

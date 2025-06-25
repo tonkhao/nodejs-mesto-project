@@ -1,9 +1,10 @@
-import {Router, Request, Response} from 'express'
+import {Router} from 'express'
+import userRouter from './users'
+import cardRouter from './card'
 
 const router = Router()
 
-router.post('/user', (req: Request, res: Response) => {
-  console.log("POST")
-})
+router.use('/users', userRouter)
+router.use('/cards', cardRouter)
 
 export default router

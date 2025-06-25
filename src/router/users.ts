@@ -1,23 +1,13 @@
-import User from '../models/user'
-import {Router, Request, Response} from 'express'
+import { createUser, getUserById, getUsers } from '../controllers/user'
+import {Router} from 'express'
 
 const userRouter = Router()
 
-userRouter.get('/users', (req: Request, res: Response) => {
-  console.log("GET USERS")
-})
+userRouter.get('/', getUsers)
 
-userRouter.get('/users/:userId', (req: Request, res: Response) => {
-  console.log("GET 1 USER")
-})
+userRouter.get('/:userId', getUserById)
 
-userRouter.post('/users', (req: Request, res: Response) => {
-  console.log("CREATE USER")
-  const {name, about} = req.body
-  User.create({name, about})
-  .then(user => res.send({data: user}))
-  .catch(err => res.status(500).send({message: 'Произошла ошибка'}))
-})
+userRouter.post('/', createUser)
 
 export default userRouter;
 

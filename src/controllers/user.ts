@@ -1,8 +1,21 @@
-import User from '../models/user'
+import User from "../models/user";
+import { Request, Response } from "express";
 
-export const createUser = (req: any, res: any) => User.create({
-  email: req.body.email,
-  password: req.body.password,
-})
-  .then((user) => res.send(user))
-  .catch((err) => res.status(400).send(err));
+export const getUsers = (req: Request, res: Response) => {
+  res.send("ALL USERS");
+};
+
+export const getUserById = (req: Request, res: Response) => {
+  res.send("SINGLE USER");
+};
+
+export const createUser = (req: Request, res: Response) => {
+  res.send("CREATE USER");
+};
+  // User.create({
+  //   name: req.body.name,
+  //   about: req.body.about,
+  //   avatar: req.body.avatar,
+  // })
+  //   .then((user) => res.send(user))
+  //   .catch((err) => res.status(400).send(err));
