@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
 
+export interface IUser {
+  name: string,
+  about: string,
+  avatar: string
+}
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -7,20 +13,16 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
-  gender: {
+  about: {
     type: String,
-    enum: ['м', 'ж', 'другой']
+    required: true,
+    minlength: 2,
+    maxlength: 200,
   },
-  age: {
-    type: Number,
-    validate: {
-      validator(v: number) {
-        return v >= 18;
-      },
-      message: 'Вам должно быть больше 18 лет'
-    }
+  avatar: {
+    type: String,
+    required: true,
   },
-  about: String
-})
+});
 
-export default mongoose.model('user', userSchema);
+export default mongoose.model<IUser>('user', userSchema);

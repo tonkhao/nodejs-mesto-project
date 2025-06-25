@@ -1,14 +1,22 @@
 import express from 'express';
-import router from './router/router';
 import mongoose from 'mongoose';
+import router from '../src/router/router'
+import userRouter from '../src/router/users'
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mydb');
-
 app.use('/', router);
+app.use('/user/', userRouter)
+
+async function connectDb() {
+  await mongoose.connect('mongodb://localhost:27017/mydb');
+  console.log("CONNECTION SUCCESS!")
+}
+
+connectDb()
+
 
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`)
