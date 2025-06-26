@@ -5,6 +5,7 @@ import router from '../src/router/router'
 const { PORT = 3000 } = process.env;
 
 const app = express();
+app.use(express.json());
 
 app.use(router);
 
