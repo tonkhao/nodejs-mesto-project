@@ -1,4 +1,3 @@
-import user from 'models/user'
 import { createUser, getUserById, getUsers, updateAvatar, updateUser } from '../controllers/user'
 import {Router} from 'express'
 
