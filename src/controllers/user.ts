@@ -22,12 +22,9 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    console.log("req.body")
-    console.log(req.body) //возвращает undefined
     const newUser = await User.create(req.body);
     res.status(200).send(newUser);
   } catch (error) {
-    console.log(error)
     res.status(500).send({error: "Ошибка создания пользователя"})
   }
 };

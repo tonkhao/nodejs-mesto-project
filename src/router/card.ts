@@ -1,22 +1,17 @@
-import Card from '../models/card'
-import {Router, Request, Response} from 'express'
+import { createCard, deleteCardById, getCards } from '../controllers/card'
+import {Router} from 'express'
 
 const cardRouter = Router()
 
-cardRouter.get('/users', (req: Request, res: Response) => {
-  console.log("GET USERS")
-})
+cardRouter.get('/', getCards)
 
-cardRouter.get('/users/:userId', (req: Request, res: Response) => {
-  console.log("GET 1 USER")
-})
+cardRouter.delete('/:cardId', deleteCardById)
 
-cardRouter.post('/users', (req: Request, res: Response) => {
-  console.log("CREATE USER")
-  const {name, about} = req.body
-  Card.create({name, about})
-  .then(user => res.send({data: user}))
-  .catch(err => res.status(500).send({message: 'Произошла ошибка'}))
-})
+cardRouter.post('/', createCard)
+
+// PATCH /users/me — обновляет профиль
+// PATCH /users/me/avatar — обновляет аватар
+// PUT /cards/:cardId/likes — поставить лайк карточке
+// DELETE /cards/:cardId/likes — убрать лайк с карточки
 
 export default cardRouter;
