@@ -10,9 +10,9 @@ userRouter.get('/:userId', getUserById)
 
 userRouter.post('/', createUser)
 
-userRouter.patch('/users/me', updateUser)
+userRouter.patch('/:userId', updateUser)
 
-userRouter.patch('/updateAvatar', updateAvatar)
+userRouter.patch('/:userId/updateAvatar', updateAvatar)
 
 export default userRouter;
 

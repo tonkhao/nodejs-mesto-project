@@ -8,7 +8,7 @@ async function connect() {
   const app = express();
   app.use(express.json());
 
-  app.use((req: Request, res: Response, next: NextFunction) => {
+  app.use((req: Request | any, res: Response, next: NextFunction) => {
     req.user = {
       _id: "685d1ae1dc07ff4b77d90cb1",
     };

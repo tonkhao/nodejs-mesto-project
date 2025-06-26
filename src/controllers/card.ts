@@ -29,14 +29,14 @@ export const createCard = async (req: Request, res: Response) => {
   }
 };
 
-export const likeCard = (req: Request, res: Response) => Card.findByIdAndUpdate(
+export const likeCard = (req: Request | any, res: Response) => Card.findByIdAndUpdate(
   req.params.cardId,
-  { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+  { $addToSet: { likes: req.user._id } },
   { new: true },
 )
 
-export const dislikeCard = (req: Request, res: Response) => Card.findByIdAndUpdate(
+export const dislikeCard = (req: Request | any, res: Response) => Card.findByIdAndUpdate(
   req.params.cardId,
-  { $pull: { likes: req.user._id } }, // убрать _id из массива
+  { $pull: { likes: req.user._id } },
   { new: true },
 )
