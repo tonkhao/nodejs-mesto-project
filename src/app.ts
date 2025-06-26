@@ -9,13 +9,12 @@ const app = express();
 app.use(router);
 
 async function connectDb() {
-  await mongoose.connect('mongodb://localhost:27017/mydb');
+  await mongoose.connect('mongodb://localhost:27017/mestodb');
   console.log("CONNECTION SUCCESS!")
+
+  app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`)
+})
 }
 
 connectDb()
-
-
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-})
