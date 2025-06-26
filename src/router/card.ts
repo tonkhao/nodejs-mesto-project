@@ -1,4 +1,4 @@
-import { createCard, deleteCardById, getCards } from '../controllers/card'
+import { createCard, deleteCardById, dislikeCard, getCards, likeCard } from '../controllers/card'
 import {Router} from 'express'
 
 const cardRouter = Router()
@@ -9,9 +9,8 @@ cardRouter.delete('/:cardId', deleteCardById)
 
 cardRouter.post('/', createCard)
 
-// PATCH /users/me — обновляет профиль
-// PATCH /users/me/avatar — обновляет аватар
-// PUT /cards/:cardId/likes — поставить лайк карточке
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
+cardRouter.put('/:cardId/likes', likeCard)
+
+cardRouter.delete('/:cardId/likes', dislikeCard)
 
 export default cardRouter;
