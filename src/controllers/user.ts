@@ -28,3 +28,11 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(500).send({error: "Ошибка создания пользователя"})
   }
 };
+
+export const updateUser = async (req: Request, res: Response) => {
+  console.log("UPDATE USER")
+};
+
+export const updateAvatar = async (req: Request, res: Response) => {
+  console.log("UPDATE AVATAR")
+};

@@ -28,3 +28,15 @@ export const createCard = async (req: Request, res: Response) => {
     res.status(500).send({error: "Ошибка создания карточки"})
   }
 };
+
+export const likeCard = (req: Request, res: Response) => Card.findByIdAndUpdate(
+  req.params.cardId,
+  { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+  { new: true },
+)
+
+export const dislikeCard = (req: Request, res: Response) => Card.findByIdAndUpdate(
+  req.params.cardId,
+  { $pull: { likes: req.user._id } }, // убрать _id из массива
+  { new: true },
+)
