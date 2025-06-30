@@ -9,7 +9,7 @@ async function connect() {
   app.use(express.json());
 
 
-  //TODO тут временная заглушка в виде any
+  //TODO тут временная заглушка в виде any!
   app.use((req: Request | any, res: Response, next: NextFunction) => {
     req.user = {
       _id: "685d70c5dc07ff4b77d90cbb",
