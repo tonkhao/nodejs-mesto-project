@@ -1,13 +1,11 @@
 import mongoose from 'mongoose';
-import userSchema from '../models/user'
-import IUser from '../models/user'
+import { IUser } from './user';
 
 interface ICard {
   name: string,
   link: string,
-  owner: typeof IUser
+  owner: IUser
 }
-
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -28,9 +26,8 @@ const cardSchema = new mongoose.Schema({
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    default: []
-  }]
+    default: [],
+  }],
 });
-
 
 export default mongoose.model<ICard>('card', cardSchema);

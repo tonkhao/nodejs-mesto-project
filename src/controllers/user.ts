@@ -1,7 +1,7 @@
-import REQUEST_STATUS from "../types/statusCodes";
-import User from "../models/user";
-import { Request, Response } from "express";
-import { Error as MongooseError } from "mongoose";
+import { Request, Response } from 'express';
+import { Error as MongooseError } from 'mongoose';
+import REQUEST_STATUS from '../types/statusCodes';
+import User from '../models/user';
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -9,10 +9,10 @@ export const getUsers = async (_req: Request, res: Response) => {
     if (users.length) {
       res.status(REQUEST_STATUS.OK).send(users);
     } else {
-      res.status(REQUEST_STATUS.NOT_FOUND).send({message: "Пользователи не найдены"})
+      res.status(REQUEST_STATUS.NOT_FOUND).send({ message: 'Пользователи не найдены' });
     }
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({message: "Ошибка получения пользователей"})
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка получения пользователей' });
   }
 };
 
@@ -26,17 +26,17 @@ export const getUserById = async (req: Request, res: Response) => {
     } else {
       res
         .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: "Пользователь не найден" });
+        .send({ message: 'Пользователь не найден' });
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка id пользователя" });
+        .send({ message: 'Ошибка id пользователя' });
     } else {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка получения пользователя" });
+        .send({ message: 'Ошибка получения пользователя' });
     }
   }
 };
@@ -46,20 +46,20 @@ export const createUser = async (req: Request, res: Response) => {
     const newUser = await User.create(req.body);
     res.status(201).send(newUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({message: "Ошибка создания пользователя"})
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка создания пользователя' });
   }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const { userData } = req.body
+  const { userData } = req.body;
   try {
     const updatedUser = User.findOneAndUpdate({ _id: userId }, userData, {
       returnOriginal: false,
     });
     res.send(updatedUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({message: "Ошибка обновления пользователя"})
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка обновления пользователя' });
   }
 };
 
@@ -72,6 +72,6 @@ export const updateAvatar = async (req: Request, res: Response) => {
     });
     res.send(updatedUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: "Ошибка обновления аватара" });
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка обновления аватара' });
   }
 };
