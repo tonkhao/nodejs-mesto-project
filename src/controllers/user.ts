@@ -55,6 +55,7 @@ export const updateUser = async (req: Request, res: Response) => {
   const { userData } = req.body;
   try {
     const updatedUser = User.findOneAndUpdate({ _id: userId }, userData, {
+      new: true,
       returnOriginal: false,
     });
     res.send(updatedUser);

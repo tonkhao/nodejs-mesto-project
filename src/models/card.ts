@@ -28,6 +28,10 @@ const cardSchema = new mongoose.Schema({
     ref: 'User',
     default: [],
   }],
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  }
 });
 
 export default mongoose.model<ICard>('card', cardSchema);
