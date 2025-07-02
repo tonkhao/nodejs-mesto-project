@@ -1,7 +1,23 @@
-import { Request, Response } from "express";
-import { Error as MongooseError } from "mongoose";
-import REQUEST_STATUS from "../types/statusCodes";
-import User from "../models/user";
+import { Request, Response } from 'express';
+import { Error as MongooseError } from 'mongoose';
+import REQUEST_STATUS from '../types/statusCodes';
+import User from '../models/user';
+
+export const login = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error('Неправильные почта или пароль');
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      res
+        .status(REQUEST_STATUS.NOT_AUTHORISED)
+        .send({ message: error.message });
+    }
+  }
+};
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -12,7 +28,7 @@ export const getUsers = async (_req: Request, res: Response) => {
       res.status(REQUEST_STATUS.NOT_FOUND).send([]);
     }
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: "Ошибка сервера" });
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -25,18 +41,18 @@ export const getUserById = async (req: Request, res: Response) => {
     } else {
       res
         .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: "Пользователь не найден" });
+        .send({ message: 'Пользователь не найден' });
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка id пользователя" });
+        .send({ message: 'Ошибка id пользователя' });
     }
     if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
     }
   }
 };
@@ -49,17 +65,17 @@ export const createUser = async (req: Request, res: Response) => {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка валидации нового пользователя" });
+        .send({ message: 'Ошибка валидации нового пользователя' });
     }
-    if (error instanceof Error && error.message.includes("E11000")) {
+    if (error instanceof Error && error.message.includes('E11000')) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Пользователь с таким именем уже существует" });
+        .send({ message: 'Пользователь с таким именем уже существует' });
     }
     if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
     }
   }
 };
@@ -74,19 +90,19 @@ export const updateUser = async (req: Request | any, res: Response) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
     res.send(updatedUser);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка обновления пользователя" });
+        .send({ message: 'Ошибка обновления пользователя' });
     }
     if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
     }
   }
 };
@@ -101,19 +117,19 @@ export const updateAvatar = async (req: Request | any, res: Response) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
     res.send(updatedUser);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка обновления аватара" });
+        .send({ message: 'Ошибка обновления аватара' });
     }
     if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
     }
   }
 };
