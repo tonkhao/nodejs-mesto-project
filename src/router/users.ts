@@ -11,8 +11,8 @@ userRouter.get('/:userId', getUserById);
 
 userRouter.post('/', createUser);
 
-userRouter.patch('/:userId', updateUser);
+userRouter.patch('/me', updateUser);
 
-userRouter.patch('/:userId/updateAvatar', updateAvatar);
+userRouter.patch('/me/updateAvatar', updateAvatar);
 
 export default userRouter;

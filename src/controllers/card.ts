@@ -7,13 +7,11 @@ export const getCards = async (_req: Request, res: Response) => {
   try {
     const cards = await Card.find({});
     if (cards.length) {
-      return res.send(cards);
+      res.send(cards);
     }
-    return res.send([]);
+    res.send([]);
   } catch (error) {
-    return res
-      .status(REQUEST_STATUS.SERVER_ERROR)
-      .send({ error: 'Ошибка получения карточек' });
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -22,18 +20,23 @@ export const deleteCardById = async (req: Request, res: Response) => {
     const { cardId } = req.params;
     const card = await Card.findByIdAndDelete(cardId);
     if (card) {
-      return res.status(REQUEST_STATUS.OK).send(card);
+      res.status(REQUEST_STATUS.OK).send(card);
+    } else {
+      res
+        .status(REQUEST_STATUS.NOT_FOUND)
+        .send({ error: 'Не найдет удаляемый документ' });
     }
-    return res
-      .status(REQUEST_STATUS.NOT_FOUND)
-      .send({ error: 'Не найдет удаляемый документ' });
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
-      return res
+      res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка id карточки' });
     }
-    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка удаления карточки' });
+    if (error instanceof Error) {
+      res
+        .status(REQUEST_STATUS.SERVER_ERROR)
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
 
@@ -43,24 +46,23 @@ export const createCard = async (req: Request, res: Response) => {
       ...req.body,
       owner: '685d1ae1dc07ff4b77d90cb1',
     });
-    if (newCard) {
-      return res.status(REQUEST_STATUS.OK).send(newCard);
-    }
-    return res
-      .status(REQUEST_STATUS.BAD_REQUEST)
-      .send({ message: 'Ошибка создания карточки' });
+    res.status(REQUEST_STATUS.OK).send(newCard);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
-      return res
+      res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка валидации новой карточки' });
     }
     if (error instanceof Error && error.message.includes('E11000')) {
-      return res
+      res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Карточка с таким именем уже существует' });
     }
-    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
+    if (error instanceof Error) {
+      res
+        .status(REQUEST_STATUS.SERVER_ERROR)
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
 
@@ -81,16 +83,16 @@ export const likeCard = async (req: Request | any, res: Response) => {
     }
   } catch (error) {
     if (error instanceof Error && error.message.includes('E11000')) {
-      return res
+      res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Невалидный id карточки' });
     }
-
-    return res
-      .status(REQUEST_STATUS.BAD_REQUEST)
-      .send({ message: 'Ошибка обновления карточки' });
+    if (error instanceof Error) {
+      res
+        .status(REQUEST_STATUS.SERVER_ERROR)
+        .send({ message: 'Ошибка сервера' });
+    }
   }
-  return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
 };
 
 // TODO тут временная заглушка в виде any
@@ -110,13 +112,14 @@ export const dislikeCard = async (req: Request | any, res: Response) => {
     }
   } catch (error) {
     if (error instanceof Error && error.message.includes('E11000')) {
-      return res
+      res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Невалидный id карточки' });
     }
-    return res
-      .status(REQUEST_STATUS.BAD_REQUEST)
-      .send({ message: 'Ошибка обновления карточки' });
+    if (error instanceof Error) {
+      res
+        .status(REQUEST_STATUS.SERVER_ERROR)
+        .send({ message: 'Ошибка сервера' });
+    }
   }
-  return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
 };
