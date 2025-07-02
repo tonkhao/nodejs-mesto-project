@@ -22,11 +22,7 @@ export const login = async (req: Request, res: Response) => {
 export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find({});
-    if (users.length) {
-      res.send(users);
-    } else {
-      res.status(REQUEST_STATUS.NOT_FOUND).send([]);
-    }
+    res.send(users);
   } catch (error) {
     res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
@@ -48,8 +44,7 @@ export const getUserById = async (req: Request, res: Response) => {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка id пользователя' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -66,13 +61,7 @@ export const createUser = async (req: Request, res: Response) => {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка валидации нового пользователя' });
-    }
-    if (error instanceof Error && error.message.includes('E11000')) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Пользователь с таким именем уже существует' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -80,26 +69,21 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// todo: временная заглушка чтобы не ругался на req.user._id
 export const updateUser = async (req: Request | any, res: Response) => {
+  const { _id } = req.body;
   const { userData } = req.body;
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user._id },
-      userData,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const updatedUser = await User.findOneAndUpdate({ _id }, userData, {
+      new: true,
+      runValidators: true,
+    });
     res.send(updatedUser);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка обновления пользователя' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -107,26 +91,21 @@ export const updateUser = async (req: Request | any, res: Response) => {
   }
 };
 
-// todo: временная заглушка чтобы не ругался на req.user._id
-export const updateAvatar = async (req: Request | any, res: Response) => {
+export const updateAvatar = async (req: Request, res: Response) => {
+  const { _id } = req.body;
   const { avatarLink } = req.body;
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user._id },
-      avatarLink,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const updatedUser = await User.findOneAndUpdate({ _id }, avatarLink, {
+      new: true,
+      runValidators: true,
+    });
     res.send(updatedUser);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка обновления аватара' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });

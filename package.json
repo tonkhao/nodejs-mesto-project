@@ -16,19 +16,16 @@
   "homepage": "https://github.com/tonkhao/nodejs-mesto-project",
   "devDependencies": {
     "@types/express": "^5.0.3",
-    "@types/node": "^24.0.3",
+    "@typescript-eslint/parser": "^8.35.0",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.32.0",
-    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^8.35.0",
     "express": "^5.1.0",
-    "mongodb": "^6.17.0",
     "mongoose": "^8.16.0"
   }
 }

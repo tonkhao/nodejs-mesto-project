@@ -6,10 +6,7 @@ import Card from '../models/card';
 export const getCards = async (_req: Request, res: Response) => {
   try {
     const cards = await Card.find({});
-    if (cards.length) {
-      res.send(cards);
-    }
-    res.send([]);
+    res.send(cards);
   } catch (error) {
     res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
@@ -31,8 +28,7 @@ export const deleteCardById = async (req: Request, res: Response) => {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка id карточки' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -52,13 +48,7 @@ export const createCard = async (req: Request, res: Response) => {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка валидации новой карточки' });
-    }
-    if (error instanceof Error && error.message.includes('E11000')) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Карточка с таким именем уже существует' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -66,12 +56,12 @@ export const createCard = async (req: Request, res: Response) => {
   }
 };
 
-// TODO тут временная заглушка в виде any
 export const likeCard = async (req: Request | any, res: Response) => {
+  const { _id } = req.user;
   try {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
+      { $addToSet: { likes: _id } },
       { new: true, runValidators: true },
     );
     if (updatedCard) {
@@ -82,12 +72,11 @@ export const likeCard = async (req: Request | any, res: Response) => {
         .send({ message: 'Карточка не найдена' });
     }
   } catch (error) {
-    if (error instanceof Error && error.message.includes('E11000')) {
+    if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Невалидный id карточки' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
@@ -95,12 +84,12 @@ export const likeCard = async (req: Request | any, res: Response) => {
   }
 };
 
-// TODO тут временная заглушка в виде any
 export const dislikeCard = async (req: Request | any, res: Response) => {
+  const { _id } = req.user;
   try {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $pull: { likes: req.user._id } },
+      { $pull: { likes: _id } },
       { new: true, runValidators: true },
     );
     if (updatedCard) {
@@ -111,12 +100,11 @@ export const dislikeCard = async (req: Request | any, res: Response) => {
         .send({ message: 'Карточка не найдена' });
     }
   } catch (error) {
-    if (error instanceof Error && error.message.includes('E11000')) {
+    if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Невалидный id карточки' });
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
         .send({ message: 'Ошибка сервера' });
