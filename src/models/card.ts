@@ -1,10 +1,9 @@
-import mongoose from 'mongoose';
-import { IUser } from './user';
+import mongoose, { Schema } from 'mongoose';
 
 interface ICard {
   name: string,
   link: string,
-  owner: IUser
+  owner: Schema.Types.ObjectId
 }
 
 const cardSchema = new mongoose.Schema({
@@ -30,8 +29,8 @@ const cardSchema = new mongoose.Schema({
   }],
   createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now,
+  },
 });
 
 export default mongoose.model<ICard>('card', cardSchema);

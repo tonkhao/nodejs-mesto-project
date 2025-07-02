@@ -2,6 +2,7 @@
   "name": "nodejs-mesto-backend-tonkhao",
   "version": "1.0.0",
   "main": "index.js",
+  "keywords": ["mesto", "mesto-backend"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint src/**/*.ts",
@@ -9,9 +10,10 @@
     "dev": "ts-node-dev src/app.ts",
     "build": "tsc"
   },
-  "author": "",
+  "author": "Tonkhao",
   "license": "ISC",
-  "description": "",
+  "description": "some text goes here",
+  "homepage": "https://github.com/tonkhao/nodejs-mesto-project",
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",

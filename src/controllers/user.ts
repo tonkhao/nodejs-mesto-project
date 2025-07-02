@@ -7,46 +7,52 @@ export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find({});
     if (users.length) {
-      res.status(REQUEST_STATUS.OK).send(users);
-    } else {
-      res.status(REQUEST_STATUS.NOT_FOUND).send({ message: 'Пользователи не найдены' });
+      return res.send(users);
     }
+    return res.status(REQUEST_STATUS.NOT_FOUND).send([]);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка получения пользователей' });
+    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-
     const user = await User.findById(userId);
     if (user) {
-      res.status(REQUEST_STATUS.OK).send(user);
-    } else {
-      res
-        .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: 'Пользователь не найден' });
+      return res.status(REQUEST_STATUS.OK).send(user);
     }
+    return res
+      .status(REQUEST_STATUS.NOT_FOUND)
+      .send({ message: 'Пользователь не найден' });
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
-      res
+      return res
         .status(REQUEST_STATUS.BAD_REQUEST)
         .send({ message: 'Ошибка id пользователя' });
-    } else {
-      res
-        .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: 'Ошибка получения пользователя' });
     }
+    return res
+      .status(REQUEST_STATUS.SERVER_ERROR)
+      .send({ message: 'Ошибка получения пользователя' });
   }
 };
 
 export const createUser = async (req: Request, res: Response) => {
   try {
     const newUser = await User.create(req.body);
-    res.status(201).send(newUser);
+    return res.status(201).send(newUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка создания пользователя' });
+    if (error instanceof MongooseError.ValidationError) {
+      return res
+        .status(REQUEST_STATUS.BAD_REQUEST)
+        .send({ message: 'Ошибка валидации нового пользователя' });
+    }
+    if (error instanceof Error && error.message.includes('E11000')) {
+      return res
+        .status(REQUEST_STATUS.BAD_REQUEST)
+        .send({ message: 'Пользователь с таким именем уже существует' });
+    }
+    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -54,13 +60,18 @@ export const updateUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { userData } = req.body;
   try {
-    const updatedUser = User.findOneAndUpdate({ _id: userId }, userData, {
+    const updatedUser = await User.findOneAndUpdate({ _id: userId }, userData, {
       new: true,
-      returnOriginal: false,
+      runValidators: true,
     });
-    res.send(updatedUser);
+    return res.send(updatedUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка обновления пользователя' });
+    if (error instanceof MongooseError.ValidationError) {
+      return res
+        .status(REQUEST_STATUS.BAD_REQUEST)
+        .send({ message: 'Ошибка обновления пользователя' });
+    }
+    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -68,11 +79,17 @@ export const updateAvatar = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { avatarLink } = req.body;
   try {
-    const updatedUser = User.findOneAndUpdate({ _id: userId }, avatarLink, {
-      returnOriginal: false,
+    const updatedUser = await User.findOneAndUpdate({ _id: userId }, avatarLink, {
+      new: true,
+      runValidators: true,
     });
-    res.send(updatedUser);
+    return res.send(updatedUser);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка обновления аватара' });
+    if (error instanceof MongooseError.ValidationError) {
+      return res
+        .status(REQUEST_STATUS.BAD_REQUEST)
+        .send({ message: 'Ошибка обновления аватара' });
+    }
+    return res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
