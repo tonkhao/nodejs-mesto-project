@@ -3,22 +3,6 @@ import { Error as MongooseError } from 'mongoose';
 import REQUEST_STATUS from '../types/statusCodes';
 import User from '../models/user';
 
-export const login = async (req: Request, res: Response) => {
-  const { email } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      throw new Error('Неправильные почта или пароль');
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      res
-        .status(REQUEST_STATUS.NOT_AUTHORISED)
-        .send({ message: error.message });
-    }
-  }
-};
-
 export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find({});
