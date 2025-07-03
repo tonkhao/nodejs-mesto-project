@@ -12,9 +12,8 @@ async function connect() {
   //TODO тут временная заглушка в виде any!
   app.use((req: Request | any, res: Response, next: NextFunction) => {
     req.user = {
-      _id: "68666d7b7f6d14b8e3bb3b96",
+      _id: "68667132f4ed79e362e5b120",
     };
-
     next();
   });
 

@@ -21,17 +21,18 @@ export const deleteCardById = async (req: Request, res: Response) => {
     } else {
       res
         .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ error: "Не найдет удаляемый документ" });
+        .send({ error: 'Не найдет удаляемый документ' });
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка id карточки" });
-    } else
+        .send({ message: 'Ошибка id карточки' });
+    } else {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
 
@@ -39,18 +40,19 @@ export const createCard = async (req: Request, res: Response) => {
   try {
     const newCard = await Card.create({
       ...req.body,
-      owner: "685d1ae1dc07ff4b77d90cb1",
+      owner: '685d1ae1dc07ff4b77d90cb1',
     });
     res.status(REQUEST_STATUS.OK).send(newCard);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Ошибка валидации новой карточки" });
-    } else
+        .send({ message: 'Ошибка валидации новой карточки' });
+    } else {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
 
@@ -60,24 +62,25 @@ export const likeCard = async (req: Request | any, res: Response) => {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: _id } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (updatedCard) {
       res.status(REQUEST_STATUS.OK).send(updatedCard);
     } else {
       res
         .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: "Карточка не найдена" });
+        .send({ message: 'Карточка не найдена' });
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Невалидный id карточки" });
-    } else
+        .send({ message: 'Невалидный id карточки' });
+    } else {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
 
@@ -87,23 +90,24 @@ export const dislikeCard = async (req: Request | any, res: Response) => {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: _id } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (updatedCard) {
       res.status(REQUEST_STATUS.OK).send(updatedCard);
     } else {
       res
         .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: "Карточка не найдена" });
+        .send({ message: 'Карточка не найдена' });
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       res
         .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: "Невалидный id карточки" });
-    } else
+        .send({ message: 'Невалидный id карточки' });
+    } else {
       res
         .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: "Ошибка сервера" });
+        .send({ message: 'Ошибка сервера' });
+    }
   }
 };
