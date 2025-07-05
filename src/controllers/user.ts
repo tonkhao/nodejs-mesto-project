@@ -1,21 +1,22 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { Error as MongooseError } from 'mongoose';
 import REQUEST_STATUS from '../types/statusCodes';
 import User from '../models/user';
 
 export const login = async (req: Request, res: Response) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
       throw new Error('Неправильные почта или пароль');
+    } else {
+      bcrypt.compare(password, user.password);
     }
-  } catch (error) {
-    if (error instanceof Error) {
-      res
-        .status(REQUEST_STATUS.NOT_AUTHORISED)
-        .send({ message: error.message });
-    }
+  } catch (error: any) {
+    res
+      .status(REQUEST_STATUS.NOT_AUTHORISED)
+      .send({ message: error.message });
   }
 };
 
@@ -54,8 +55,12 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, about, avatar } = req.body;
-    const newUser = await User.create({ name, about, avatar });
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    const newUser = await User.create({
+      name, about, avatar, email, password,
+    });
     res.status(201).send(newUser);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {

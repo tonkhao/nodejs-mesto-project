@@ -2,7 +2,10 @@
   "name": "nodejs-mesto-backend-tonkhao",
   "version": "1.0.0",
   "main": "index.js",
-  "keywords": ["mesto", "mesto-backend"],
+  "keywords": [
+    "mesto",
+    "mesto-backend"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint src/**/*.ts",
@@ -15,9 +18,10 @@
   "description": "some text goes here",
   "homepage": "https://github.com/tonkhao/nodejs-mesto-project",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.3",
-    "@typescript-eslint/parser": "^8.35.0",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.32.0",
@@ -25,6 +29,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
     "mongoose": "^8.16.0"
   }
