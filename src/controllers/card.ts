@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Error as MongooseError } from 'mongoose';
 import REQUEST_STATUS from '../types/statusCodes';
 import Card from '../models/card';
+import jwt from 'jsonwebtoken';
 
 export const getCards = async (_req: Request, res: Response) => {
   try {

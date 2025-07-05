@@ -3,20 +3,23 @@ import bcrypt from 'bcryptjs';
 import { Error as MongooseError } from 'mongoose';
 import REQUEST_STATUS from '../types/statusCodes';
 import User from '../models/user';
+import jwt from 'jsonwebtoken';
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error('Неправильные почта или пароль');
+      res.status(REQUEST_STATUS.NOT_AUTHORISED).send('Неправильные почта или пароль');
     } else {
-      bcrypt.compare(password, user.password);
+      const loginRes = await bcrypt.compare(password, user.password);
+      if (loginRes) {
+        const token = jwt.sign({ _id: user._id }, 'some-secret-key');
+        res.send(token);
+      }
     }
-  } catch (error: any) {
-    res
-      .status(REQUEST_STATUS.NOT_AUTHORISED)
-      .send({ message: error.message });
+  } catch (error) {
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -24,6 +27,16 @@ export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find({});
     res.send(users);
+  } catch (error) {
+    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
+  }
+};
+
+export const getUserInfo = async (req: Request | any, res: Response) => {
+  const { _id } = req.user;
+  try {
+    const user = await User.findOne({ _id });
+    res.send(user);
   } catch (error) {
     res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
   }

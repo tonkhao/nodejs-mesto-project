@@ -10,7 +10,7 @@ async function connect() {
 
   app.use((req: Request | any, res: Response, next: NextFunction) => {
     req.user = {
-      _id: '68667132f4ed79e362e5b120',
+      _id: '686966f2660308a9926b8d11',
     };
     next();
   });
