@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { Error as MongooseError } from 'mongoose';
 import jwt from 'jsonwebtoken';
+import REQUEST_STATUS from '../types/statusCodes';
+import { JWT_SECRET } from '../config';
 import User from '../models/user';
 import NotAuthorizedError from '../errors/notAuthorisedError';
 import NotFoundError from '../errors/notFoundError';
@@ -12,12 +14,18 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new NotAuthorizedError('Ошибка аторизации');
+      next(new NotAuthorizedError('Ошибка аторизации'));
     } else {
       const matched = await bcrypt.compare(password, user.password);
       if (matched) {
-        const token = jwt.sign({ _id: user._id }, 'some-secret-key');
-        res.send(token);
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+        res.status(REQUEST_STATUS.OK).cookie('jwt', token, {
+          httpOnly: true,
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production',
+        }).send(token);
+      } else {
+        next(new NotAuthorizedError('Неправильная почта или пароль'));
       }
     }
   } catch (error) {
