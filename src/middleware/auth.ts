@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import NotAuthorizedError from '../errors/notAuthorisedError';
+import { JWT_SECRET } from '../config';
 
 export default (req: Request | any, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
@@ -12,9 +13,13 @@ export default (req: Request | any, res: Response, next: NextFunction) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'some-secret-key');
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (typeof decoded !== 'object' || decoded === null) {
+      throw new NotAuthorizedError('Неверный токен');
+    }
+    payload = { _id: (decoded as any)._id, iat: decoded.italics, exp: decoded.exp };
   } catch (error) {
-    next(error);
+    next(new NotAuthorizedError('Необходима авторизация'));
   }
 
   req.user = payload;

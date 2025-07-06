@@ -32,8 +32,12 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
+    "dotenv": "^17.0.1",
     "express": "^5.1.0",
+    "express-winston": "^4.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.0"
+    "mongoose": "^8.16.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   }
 }
