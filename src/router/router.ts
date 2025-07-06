@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import userRouter from './users';
 import cardRouter from './card';
 import { createUser, login } from '../controllers/user';
+import auth from '../middleware/auth';
 
 const router = Router();
 
@@ -9,6 +10,8 @@ const router = Router();
 router.get('/', (req: Request, res: Response) => {
   res.send({ message: 'Добро пожаловать!' });
 });
+
+router.use(auth);
 
 // основные раутеры
 router.use('/users', userRouter);

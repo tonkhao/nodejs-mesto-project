@@ -1,19 +1,20 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Error as MongooseError } from 'mongoose';
+// import jwt from 'jsonwebtoken';
 import REQUEST_STATUS from '../types/statusCodes';
 import Card from '../models/card';
-import jwt from 'jsonwebtoken';
+import BadRequestError from '../errors/badRequestError';
 
-export const getCards = async (_req: Request, res: Response) => {
+export const getCards = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const cards = await Card.find({});
     res.send(cards);
   } catch (error) {
-    res.status(REQUEST_STATUS.SERVER_ERROR).send({ message: 'Ошибка сервера' });
+    next();
   }
 };
 
-export const deleteCardById = async (req: Request, res: Response) => {
+export const deleteCardById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { cardId } = req.params;
     const card = await Card.findByIdAndDelete(cardId);
@@ -26,18 +27,14 @@ export const deleteCardById = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Ошибка id карточки' });
+      next(new BadRequestError('Ошибка id карточки'));
     } else {
-      res
-        .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: 'Ошибка сервера' });
+      next();
     }
   }
 };
 
-export const createCard = async (req: Request, res: Response) => {
+export const createCard = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const newCard = await Card.create({
       ...req.body,
@@ -46,18 +43,14 @@ export const createCard = async (req: Request, res: Response) => {
     res.status(REQUEST_STATUS.OK).send(newCard);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Ошибка валидации новой карточки' });
+      next(new BadRequestError('Ошибка валидации новой карточки'));
     } else {
-      res
-        .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: 'Ошибка сервера' });
+      next();
     }
   }
 };
 
-export const likeCard = async (req: Request | any, res: Response) => {
+export const likeCard = async (req: Request | any, res: Response, next: NextFunction) => {
   const { _id } = req.user;
   try {
     const updatedCard = await Card.findByIdAndUpdate(
@@ -74,18 +67,14 @@ export const likeCard = async (req: Request | any, res: Response) => {
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Невалидный id карточки' });
+      next(new BadRequestError('Невалидный id карточки'));
     } else {
-      res
-        .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: 'Ошибка сервера' });
+      next();
     }
   }
 };
 
-export const dislikeCard = async (req: Request | any, res: Response) => {
+export const dislikeCard = async (req: Request | any, res: Response, next: NextFunction) => {
   const { _id } = req.user;
   try {
     const updatedCard = await Card.findByIdAndUpdate(
@@ -102,13 +91,9 @@ export const dislikeCard = async (req: Request | any, res: Response) => {
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
-      res
-        .status(REQUEST_STATUS.BAD_REQUEST)
-        .send({ message: 'Невалидный id карточки' });
+      next(new BadRequestError('Невалидный id карточки'));
     } else {
-      res
-        .status(REQUEST_STATUS.SERVER_ERROR)
-        .send({ message: 'Ошибка сервера' });
+      next();
     }
   }
 };
