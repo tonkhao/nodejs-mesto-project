@@ -7,7 +7,7 @@ export default (req: Request | any, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new NotAuthorizedError('Ошибка авторизации');
+    next(new NotAuthorizedError('Ошибка авторизации'));
   }
   const token = authorization.replace('Bearer ', '');
   let payload;

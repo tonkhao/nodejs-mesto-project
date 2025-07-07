@@ -1,16 +1,14 @@
-import { Router, Request, Response } from 'express';
+import {
+  Router, Request, Response, NextFunction,
+} from 'express';
 import userRouter from './users';
 import cardRouter from './card';
 import { createUser, login } from '../controllers/user';
 import auth from '../middleware/auth';
 import { validateCreateUser, validateLogin } from '../validators/celebrateValidators';
+import NotFoundError from '../errors/notFoundError';
 
 const router = Router();
-
-// Дефолтный раутер для заглушки главной страницы
-router.get('/', (req: Request, res: Response) => {
-  res.send({ message: 'Добро пожаловать!' });
-});
 
 // рауты логина
 router.post('/signin', validateLogin, login);
@@ -23,8 +21,12 @@ router.use('/users', userRouter);
 router.use('/cards', cardRouter);
 
 // конечный раутер для 404
-router.use((_req: Request, res: Response) => {
-  res.status(404).send('Такой страницы нет!');
+router.use((_req: Request, res: Response, next: NextFunction) => {
+  try {
+    next(new NotFoundError('Такой страницы нет!'));
+  } catch (error) {
+    next();
+  }
 });
 
 export default router;
