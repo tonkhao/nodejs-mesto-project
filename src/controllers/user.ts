@@ -13,17 +13,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    console.log('33333');
-    console.log(user);
     if (!user) {
       next(new NotAuthorizedError('Ошибка аторизации'));
     } else {
-      console.log(user);
       const matched = await bcrypt.compare(password, user.password);
       if (matched) {
         const token = jwt.sign({ _id: user._id }, JWT_SECRET);
         res.status(REQUEST_STATUS.OK).cookie('jwt', token, {
-          httpOnly: true,
+          httpOnly: false,
           sameSite: 'lax',
           secure: process.env.NODE_ENV === 'production',
         }).send(token);
