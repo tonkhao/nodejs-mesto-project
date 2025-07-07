@@ -1,51 +1,60 @@
 import { Request, Response, NextFunction } from 'express';
 import { Error as MongooseError } from 'mongoose';
-// import jwt from 'jsonwebtoken';
 import REQUEST_STATUS from '../types/statusCodes';
 import Card from '../models/card';
 import BadRequestError from '../errors/badRequestError';
+import NotFoundError from '../errors/notFoundError';
+import NotAuthorizedError from '../errors/notAuthorisedError';
 
 export const getCards = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const cards = await Card.find({});
     res.send(cards);
   } catch (error) {
-    next();
+    next(error);
   }
 };
 
-export const deleteCardById = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteCardById = async (req: Request | any, res: Response, next: NextFunction) => {
   try {
     const { cardId } = req.params;
-    const card = await Card.findByIdAndDelete(cardId);
-    if (card) {
-      res.status(REQUEST_STATUS.OK).send(card);
+    const card = await Card.findById(cardId);
+
+    // здесь извлекаю id из ObjectId
+    const isCardOwner = (card?.owner as any).toHexString() === req.user._id;
+    if (isCardOwner) {
+      const cardToDelete = await Card.findByIdAndDelete(cardId);
+      if (cardToDelete) {
+        res.status(REQUEST_STATUS.OK).send(card);
+      } else {
+        next(new NotFoundError('Не найдет удаляемый документ'));
+      }
     } else {
-      res
-        .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ error: 'Не найдет удаляемый документ' });
+      next(new NotAuthorizedError('Нет прав для удалений такой карточки'));
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       next(new BadRequestError('Ошибка id карточки'));
     } else {
-      next();
+      next(error);
     }
   }
 };
 
-export const createCard = async (req: Request, res: Response, next: NextFunction) => {
+export const createCard = async (req: Request | any, res: Response, next: NextFunction) => {
+  const { name, link } = req.body;
   try {
     const newCard = await Card.create({
-      ...req.body,
-      owner: '685d1ae1dc07ff4b77d90cb1',
+      name,
+      link,
+      owner: req.user._id,
     });
     res.status(REQUEST_STATUS.OK).send(newCard);
   } catch (error) {
     if (error instanceof MongooseError.ValidationError) {
       next(new BadRequestError('Ошибка валидации новой карточки'));
     } else {
-      next();
+      next(error);
     }
   }
 };
@@ -61,15 +70,13 @@ export const likeCard = async (req: Request | any, res: Response, next: NextFunc
     if (updatedCard) {
       res.status(REQUEST_STATUS.OK).send(updatedCard);
     } else {
-      res
-        .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: 'Карточка не найдена' });
+      next(new NotFoundError('Карточка не найдена'));
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       next(new BadRequestError('Невалидный id карточки'));
     } else {
-      next();
+      next(error);
     }
   }
 };
@@ -85,15 +92,13 @@ export const dislikeCard = async (req: Request | any, res: Response, next: NextF
     if (updatedCard) {
       res.status(REQUEST_STATUS.OK).send(updatedCard);
     } else {
-      res
-        .status(REQUEST_STATUS.NOT_FOUND)
-        .send({ message: 'Карточка не найдена' });
+      next(new NotFoundError('Карточка не найдена'));
     }
   } catch (error) {
     if (error instanceof MongooseError.CastError) {
       next(new BadRequestError('Невалидный id карточки'));
     } else {
-      next();
+      next(error);
     }
   }
 };

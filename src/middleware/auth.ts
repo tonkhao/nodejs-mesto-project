@@ -17,11 +17,11 @@ export default (req: Request | any, res: Response, next: NextFunction) => {
     if (typeof decoded !== 'object' || decoded === null) {
       throw new NotAuthorizedError('Неверный токен');
     }
-    payload = { _id: (decoded as any)._id, iat: decoded.italics, exp: decoded.exp };
+    payload = { _id: decoded._id, iat: decoded.italics, exp: decoded.exp };
   } catch (error) {
     next(new NotAuthorizedError('Необходима авторизация'));
   }
 
-  req.user = payload;
+  req.user = { _id: payload?._id };
   return next();
 };

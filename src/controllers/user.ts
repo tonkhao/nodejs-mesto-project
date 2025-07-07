@@ -29,7 +29,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       }
     }
   } catch (error) {
-    next();
+    next(error);
   }
 };
 
@@ -38,7 +38,7 @@ export const getUsers = async (_req: Request, res: Response, next: NextFunction)
     const users = await User.find({});
     res.send(users);
   } catch (error) {
-    next();
+    next(error);
   }
 };
 
@@ -48,7 +48,7 @@ export const getUserInfo = async (req: Request | any, res: Response, next: NextF
     const user = await User.findOne({ _id });
     res.send(user);
   } catch (error) {
-    next();
+    next(error);
   }
 };
 
@@ -65,7 +65,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     if (error instanceof MongooseError.CastError) {
       next(new BadRequestError('Ошибка id пользователя'));
     } else {
-      next();
+      next(error);
     }
   }
 };
@@ -84,7 +84,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     if (error instanceof MongooseError.ValidationError) {
       next(new BadRequestError('Ошибка валидации нового пользователя'));
     } else {
-      next();
+      next(error);
     }
   }
 };
@@ -110,7 +110,7 @@ export const updateUser = async (
     if (error instanceof MongooseError.ValidationError) {
       next(new BadRequestError('Ошибка обновления пользователя'));
     } else {
-      next();
+      next(error);
     }
   }
 };
@@ -132,7 +132,7 @@ export const updateAvatar = async (req: Request | any, res: Response, next: Next
     if (error instanceof MongooseError.ValidationError) {
       next(new BadRequestError('Ошибка обновления аватара'));
     } else {
-      next();
+      next(error);
     }
   }
 };
