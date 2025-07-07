@@ -3,6 +3,7 @@ import userRouter from './users';
 import cardRouter from './card';
 import { createUser, login } from '../controllers/user';
 import auth from '../middleware/auth';
+import { validateCreateUser, validateLogin } from '../validators/celebrateValidators';
 
 const router = Router();
 
@@ -11,15 +12,15 @@ router.get('/', (req: Request, res: Response) => {
   res.send({ message: 'Добро пожаловать!' });
 });
 
+// рауты логина
+router.post('/signin', validateLogin, login);
+router.post('/signup', validateCreateUser, createUser);
+
 router.use(auth);
 
 // основные раутеры
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
-
-// рауты логина
-router.post('/signin', login);
-router.post('/signup', createUser);
 
 // конечный раутер для 404
 router.use((_req: Request, res: Response) => {
