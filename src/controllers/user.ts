@@ -95,11 +95,11 @@ export const updateUser = async (
   next: NextFunction,
 ) => {
   const { _id } = req.user;
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
   try {
     const updatedUser = await User.findOneAndUpdate(
       { _id },
-      { name, about, avatar },
+      { name, about },
       {
         new: true,
         runValidators: true,

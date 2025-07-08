@@ -25,7 +25,7 @@ router.use((_req: Request, res: Response, next: NextFunction) => {
   try {
     next(new NotFoundError('Такой страницы нет!'));
   } catch (error) {
-    next();
+    next(error);
   }
 });
 

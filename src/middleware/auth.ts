@@ -7,7 +7,7 @@ export default (req: Request | any, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    next(new NotAuthorizedError('Ошибка авторизации'));
+    return next(new NotAuthorizedError('Ошибка авторизации'));
   }
   const token = authorization.replace('Bearer ', '');
   let payload;
@@ -19,7 +19,7 @@ export default (req: Request | any, res: Response, next: NextFunction) => {
     }
     payload = { _id: decoded._id, iat: decoded.italics, exp: decoded.exp };
   } catch (error) {
-    next(new NotAuthorizedError('Необходима авторизация'));
+    return next(new NotAuthorizedError('Необходима авторизация'));
   }
 
   req.user = { _id: payload?._id };

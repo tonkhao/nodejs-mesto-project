@@ -4,8 +4,7 @@ import { errors as celebrateErrors } from 'celebrate';
 import router from './router/router';
 import errorHandler from './middleware/errorHandlers';
 import { errorLogger, requestLogger } from './middleware/logger';
-
-const { PORT = 3000 } = process.env;
+import { MONGO_URL, PORT } from './config';
 
 async function connect() {
   const app = express();
@@ -21,7 +20,7 @@ async function connect() {
 
   app.use(errorHandler);
 
-  await mongoose.connect('mongodb://localhost:27017/mestodb');
+  await mongoose.connect(MONGO_URL);
   console.log('CONNECTION SUCCESS!');
 
   app.listen(PORT, () => {
