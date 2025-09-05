@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { errors as celebrateErrors } from 'celebrate';
+import cors from 'cors';
 import router from './router/router';
 import errorHandler from './middleware/errorHandlers';
 import { errorLogger, requestLogger } from './middleware/logger';
@@ -8,7 +9,10 @@ import { MONGO_URL, PORT } from './config';
 
 async function connect() {
   const app = express();
+
   app.use(express.json());
+
+  app.use(cors());
 
   app.use(requestLogger);
 

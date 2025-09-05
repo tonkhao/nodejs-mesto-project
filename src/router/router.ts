@@ -10,10 +10,11 @@ import NotFoundError from '../errors/notFoundError';
 
 const router = Router();
 
+router.get('/', () => console.log('GET'));
+
 // рауты логина
 router.post('/signin', validateLogin, login);
 router.post('/signup', validateCreateUser, createUser);
-
 router.use(auth);
 
 // основные раутеры

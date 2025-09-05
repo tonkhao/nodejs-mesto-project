@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const getUsers = async (_req: Request, res: Response, next: NextFunction) => {
+export const getUsers = async (req: Request | any, res: Response, next: NextFunction) => {
   try {
     const users = await User.find({});
     res.send(users);
