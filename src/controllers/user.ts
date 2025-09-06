@@ -9,12 +9,11 @@ import NotAuthorizedError from '../errors/notAuthorisedError';
 import NotFoundError from '../errors/notFoundError';
 import BadRequestError from '../errors/badRequestError';
 
-export const getWelcomeMessage = async (req: Request | any, res: Response, next: NextFunction) => {
-  try {
-    res.send('welcome');
-  } catch (error) {
-    next(error);
-  }
+export const getWelcomeMessage = async (
+  req: Request | any,
+  res: Response,
+) => {
+  res.send('API CHECK OK');
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
