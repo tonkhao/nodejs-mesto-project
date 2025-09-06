@@ -3,14 +3,14 @@ import {
 } from 'express';
 import userRouter from './users';
 import cardRouter from './card';
-import { createUser, login } from '../controllers/user';
+import { createUser, getWelcomeMessage, login } from '../controllers/user';
 import auth from '../middleware/auth';
 import { validateCreateUser, validateLogin } from '../validators/celebrateValidators';
 import NotFoundError from '../errors/notFoundError';
 
 const router = Router();
 
-router.get('/', () => console.log('GET'));
+router.get('/', getWelcomeMessage);
 
 // рауты логина
 router.post('/signin', validateLogin, login);
