@@ -12,6 +12,12 @@ const router = Router();
 
 router.get('/', getWelcomeMessage);
 
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 // рауты логина
 router.post('/signin', validateLogin, login);
 router.post('/signup', validateCreateUser, createUser);
