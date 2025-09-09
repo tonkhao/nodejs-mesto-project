@@ -12,7 +12,12 @@ async function connect() {
 
   app.use(express.json());
 
-  app.use(cors());
+  const corsOptions = {
+    origin: 'tonkhao.students.nomorepartiessbs.ru',
+    optionsSuccessStatus: 200,
+  };
+
+  app.use(cors(corsOptions));
 
   app.use(requestLogger);
 

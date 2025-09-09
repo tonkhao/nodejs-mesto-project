@@ -26,11 +26,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       const matched = await bcrypt.compare(password, user.password);
       if (matched) {
         const token = jwt.sign({ _id: user._id }, JWT_SECRET);
-        res.status(REQUEST_STATUS.OK).cookie('jwt', token, {
-          httpOnly: false,
-          sameSite: 'lax',
-          secure: process.env.NODE_ENV === 'production',
-        }).send(token);
+        res.status(REQUEST_STATUS.OK).send({ token });
       } else {
         next(new NotAuthorizedError('Неправильная почта или пароль'));
       }
