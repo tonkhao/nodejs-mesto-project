@@ -9,7 +9,7 @@ const {
   DEPLOY_USER,
   DEPLOY_HOST,
   DEPLOY_PATH,
-  DEPLOY_REF = 'origin/master',
+  DEPLOY_REF,
 } = process.env;
 
 module.exports = {
